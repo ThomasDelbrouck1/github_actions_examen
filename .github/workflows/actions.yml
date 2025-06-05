@@ -15,7 +15,7 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@master
+      uses: actions/checkout@v4
     - name: Update diagram
       uses: githubocto/repo-visualizer@0.7.1
       with:

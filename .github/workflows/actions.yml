@@ -1,24 +1,37 @@
-name: Create diagram
+name: github action workflow 
+
 on:
-  workflow_dispatch: {}
   push:
     branches:
-      - main
+    - main
 jobs:
-  get_data:
-    runs-on: ubuntu-latest
+  test:
+    name: Test on node ${{ matrix.node_version }} and ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        node_version: ['18.x', '20.x']
+        os: [windows-latest, macOS-latest]
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@master
-      - name: Update diagram
-        uses: githubocto/repo-visualizer@main
-        with:
-          excluded_paths: "ignore,.github"
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: Update diagram
+      uses: githubocto/repo-visualizer@0.7.1
+      with:
+        output_file: "images/diagram.svg"
+        excluded_paths: "dist,node_modules"
+
+    - name: npm install, build and test
+      run: |
+        npm install
+        npm run build --if-present
+       
     
   
-      - name: Get artifact
-        uses: actions/download-artifact@v2
-        with:
-          name: "my-diagram"
-          path: "downloads"
+    - name: Get artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: "my-diagram"
+        path: "downloads"
       
